@@ -7,31 +7,31 @@ from .teamid_lookup import fangraphs_teams
 from .teamid_lookup import team_ids
 from .statcast import statcast, statcast_single_game
 from .statcast_pitcher import (
-	statcast_pitcher,
-	statcast_pitcher_exitvelo_barrels,
-	statcast_pitcher_expected_stats,
-	statcast_pitcher_pitch_arsenal,
-	statcast_pitcher_arsenal_stats,
-	statcast_pitcher_percentile_ranks,
-	statcast_pitcher_spin_dir_comp
+    statcast_pitcher,
+    statcast_pitcher_exitvelo_barrels,
+    statcast_pitcher_expected_stats,
+    statcast_pitcher_pitch_arsenal,
+    statcast_pitcher_arsenal_stats,
+    statcast_pitcher_percentile_ranks,
+    statcast_pitcher_spin_dir_comp,
 )
 from .statcast_batter import (
-	statcast_batter,
-	statcast_batter_exitvelo_barrels,
-	statcast_batter_expected_stats,
-	statcast_batter_percentile_ranks,
-	statcast_batter_pitch_arsenal,
-    statcast_batter_bat_tracking
+    statcast_batter,
+    statcast_batter_exitvelo_barrels,
+    statcast_batter_expected_stats,
+    statcast_batter_percentile_ranks,
+    statcast_batter_pitch_arsenal,
+    statcast_batter_bat_tracking,
 )
 from .statcast_running import statcast_sprint_speed, statcast_running_splits
 from .statcast_fielding import (
-	statcast_outs_above_average,
-	statcast_outfield_directional_oaa,
-	statcast_outfield_catch_prob,
-	statcast_outfielder_jump,
-	statcast_catcher_poptime,
-	statcast_catcher_framing,
-	statcast_fielding_run_value
+    statcast_outs_above_average,
+    statcast_outfield_directional_oaa,
+    statcast_outfield_catch_prob,
+    statcast_outfielder_jump,
+    statcast_catcher_poptime,
+    statcast_catcher_framing,
+    statcast_fielding_run_value,
 )
 from .league_batting_stats import batting_stats_bref
 from .league_batting_stats import batting_stats_range
@@ -98,7 +98,13 @@ from .plotting import plot_stadium
 from .plotting import spraychart
 from .plotting import plot_teams
 from .plotting import plot_strike_zone
-from .datasources.fangraphs import (fg_batting_data, fg_pitching_data, fg_team_batting_data, fg_team_fielding_data,
-                                    fg_team_pitching_data)
+from .datasources.fangraphs import (
+    fg_batting_data,
+    fg_pitching_data,
+    fg_team_batting_data,
+    fg_team_fielding_data,
+    fg_team_pitching_data,
+)
 from .split_stats import get_splits
+from .analysis.warplus import position_warplus, shortstop_warplus
 from .version import __version__
