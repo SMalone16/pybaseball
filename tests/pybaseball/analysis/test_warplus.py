@@ -1,4 +1,5 @@
 import pandas as pd
+
 from pybaseball.analysis.warplus import position_warplus, shortstop_warplus
 
 
@@ -30,7 +31,6 @@ def test_shortstop_warplus(monkeypatch):
     assert 'WAR_plus' in result.columns
     assert result.loc[0, 'WAR_plus'] == 100.0
 
-
 def test_position_warplus_select_position(monkeypatch):
     batting_df = pd.DataFrame({
         'mlbID': [1, 2],
@@ -57,4 +57,3 @@ def test_position_warplus_select_position(monkeypatch):
     assert not result.empty
     assert 'WAR_plus' in result.columns
     assert result.loc[0, 'WAR_plus'] == 100.0
-

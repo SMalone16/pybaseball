@@ -5,8 +5,10 @@ import pandas as pd
 
 from ..league_batting_stats import batting_stats_range, bwar_bat
 from ..league_pitching_stats import pitching_stats_range, bwar_pitch
+
 from ..utils import sanitize_date_range
 from ..enums.fangraphs import FangraphsPositions
+
 
 
 def position_warplus(
@@ -36,6 +38,7 @@ def position_warplus(
     start_str = start_date.strftime("%Y-%m-%d")
     end_str = end_date.strftime("%Y-%m-%d")
 
+
     if stat_type == "bat":
         stats_df = batting_stats_range(start_str, end_str)
         war_data = bwar_bat(return_all=True)
@@ -62,6 +65,7 @@ def position_warplus(
     else:
         mask = pd.Series(False, index=war_data.index)
 
+
     war_period = war_data.loc[mask & position_mask]
     war_by_player = war_period.groupby("mlb_ID")["WAR"].sum()
 
@@ -71,7 +75,6 @@ def position_warplus(
     result = pd.concat([war_by_player.rename("WAR"), war_plus], axis=1).reset_index()
     return result
 
-
 def shortstop_warplus(start_dt: Optional[str] = None, end_dt: Optional[str] = None) -> pd.DataFrame:
     """Backward compatible wrapper for shortstop WAR+."""
     return position_warplus(
@@ -80,4 +83,3 @@ def shortstop_warplus(start_dt: Optional[str] = None, end_dt: Optional[str] = No
         end_dt=end_dt,
         stat_type="bat",
     )
-
