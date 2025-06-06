@@ -14,6 +14,8 @@ Pybaseball can be installed via pip:
 pip install pybaseball
 ```
 
+Pybaseball supports Python 3.8 through 3.12.
+
 or from the repo (which may at times be more up to date):
 
 ```bash
