@@ -23,16 +23,17 @@ def top_prospects(teamName=None, playerType=None):
         mlbTeamId = teamid_lookup.mlb_team_id(teamName)
         url = f"https://www.mlb.com/prospects/stats?teamId={mlbTeamId}"
 
-    res = requests.get(
+    response = requests.get(
         url,
         timeout=None,
         headers={
-            "UserAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) "
-            "AppleWebKit/537.36 (KHTML, like Gecko) C"
-            "hrome/104.0.5112.79 Safari/537.36"
+            "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) "
+            "AppleWebKit/537.36 (KHTML, like Gecko) "
+            "Chrome/104.0.5112.79 Safari/537.36"
         },
-    ).content
-    prospectList = pd.read_html(res)
+    )
+    response.raise_for_status()
+    prospectList = pd.read_html(response.content)
     
     if playerType == "batters":
         topBattingProspects = postprocess(prospectList[0])
