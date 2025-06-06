@@ -1,12 +1,14 @@
 from datetime import datetime
-from typing import Optional
+from typing import Optional, Any
 import logging
 
-from bs4 import BeautifulSoup
+from bs4 import BeautifulSoup, Tag
+from typing import cast
 import numpy as np
 import pandas as pd
 
 from pybaseball.utils import get_first_season, most_recent_season
+from . import teamid_lookup
 
 from . import cache
 from .datasources.bref import BRefSession
@@ -29,22 +31,23 @@ def get_soup(season: Optional[int], team: str) -> BeautifulSoup:
 
 def get_table(soup: BeautifulSoup, team: str) -> pd.DataFrame:
     try:
-        table = soup.find_all('table')[0]
+        table: Tag = soup.find_all('table')[0]  # type: ignore[assignment]
     except IndexError:
         raise ValueError(
             "Data cannot be retrieved for this team/year combo. Please verify that your team abbreviation is accurate and that the team existed during the season you are searching for."
         )
     data = []
-    headings = [th.get_text() for th in table.find("tr").find_all("th")]
+    tr_tag = cast(Tag, table.find("tr"))
+    headings = [th.get_text() for th in tr_tag.find_all("th")]
     headings = headings[1:] # the "gm#" heading doesn't have a <td> element
     headings[3] = "Home_Away"
     data.append(headings)
-    table_body = table.find('tbody')
+    table_body: Any = table.find('tbody')  # type: ignore[assignment]
     rows = table_body.find_all('tr')
     for row_index in range(len(rows) - 1): #last row is a description of column meanings
         row = rows[row_index]
         try:
-            cols = row.find_all('td')
+            cols: Any = row.find_all('td')
             #links = row.find_all('a')
             if cols[1].text == "":
                 cols[1].string = team # some of the older season don't seem to have team abbreviation on their tables
@@ -108,7 +111,7 @@ def make_numeric(data: pd.DataFrame) -> pd.DataFrame:
     return data
 
 @cache.df_cache()
-def schedule_and_record(season: int, team: str) -> pd.DataFrame:
+def schedule_and_record(season: int, team: Optional[str] = None) -> pd.DataFrame:
     """ 
     Retrieve a team's game-level results for a given season, including win/loss/tie result, score, attendance, 
     and winning/losing/saving pitcher. If the season is incomplete, it will provide scheduling information for 
@@ -116,10 +119,18 @@ def schedule_and_record(season: int, team: str) -> pd.DataFrame:
 
     ARGUMENTS
         season: Integer. The season for which you want a team's record data.
-        team: String. The abbreviation of the team for which you are requesting data (e.g. "PHI", "BOS", "LAD").
+        team: String, optional. The abbreviation of the team for which you are requesting data
+            (e.g. "PHI", "BOS", "LAD"). If ``None``, returns the results for every
+            MLB team in the given season.
     """
+    # If no team is supplied, retrieve schedules for every team in the season
+    if team is None:
+        teams = teamid_lookup.team_ids(season)["teamIDBR"].unique()
+        frames = [schedule_and_record(season, t) for t in teams]
+        return pd.concat(frames, ignore_index=True)
+
     # retrieve html from baseball reference
-    # sanatize input
+    # sanitize input
     team = team.upper()
     try:
         first_season = get_first_season(team)

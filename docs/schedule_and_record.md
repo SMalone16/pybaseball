@@ -1,13 +1,14 @@
 # Schedule and Record
 
-`schedule_and_record(season, team)`
+`schedule_and_record(season, team=None)`
 
 The schedule_and_record function returns a dataframe of a team's game-level results for a given season, including win/loss/tie result, score, attendance, and winning/losing/saving pitcher. If the season is incomplete, it will provide scheduling information for future games. 
 
 ## Arguments
 `season:` Integer. The season for which you want a team's record data. 
 
-`team:` String. The abbreviation of the team for which you are requesting data (e.g. "PHI", "BOS", "LAD"). 
+`team:` String, optional. The abbreviation of the team for which you are requesting data (e.g. "PHI", "BOS", "LAD").
+If omitted or ``None``, the schedules and results for all MLB teams are returned for the specified season.
 
 Note that if a team did not exist during the year you are requesting data for, the query will be unsuccessful. Historical name and city changes for teams in older seasons can cause some problems as well. The Los Angeles Dodgers ("LAD"), for example, are abbreviated "BRO" in older seasons, due to their origins as the Brooklyn Dodgers. This may at times require some detective work in certain cases.   
 
@@ -21,4 +22,7 @@ data = schedule_and_record(1927, "NYY")
 
 # Results and upcoming schedule for the Phillies' current season (2017 at the time of writing)
 data = schedule_and_record(2017, "PHI")
+
+# Retrieve the full league schedule for 2017
+all_teams = schedule_and_record(2017)
 ```
