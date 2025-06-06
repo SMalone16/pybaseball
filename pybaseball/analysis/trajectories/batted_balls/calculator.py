@@ -8,6 +8,7 @@ from scipy.integrate import RK45
 
 from pybaseball.analysis.trajectories.unit_conversions import RPM_TO_RAD_SEC
 from pybaseball.analysis.trajectories.utils import spin_components, unit_vector
+from pybaseball.analysis.trajectories.trajectory import Trajectory
 from pybaseball.datahelpers.postprocessing import check_between_zero_one
 
 from .parameters import BattedBallConstants, DragForceCoefficients, EnvironmentalParameters, LiftForceCoefficients
@@ -109,8 +110,7 @@ class BattedBallTrajectory:
         initial_spin: float,
         spin_angle: float,
         delta_time: float = 0.01,
-    ) -> pd.DataFrame:
-        # TODO: make the return value a trajectory object
+    ) -> Trajectory:
         """
         computes a batted ball trajectory. speed is in miles-per-hour,
         angles in degrees, and spin in revolutions per minute
@@ -121,7 +121,7 @@ class BattedBallTrajectory:
         :param initial_spin: float
         :param spin_angle: float
         :param delta_time: float
-        :return: pandas data frame
+        :return: Trajectory
         """
 
         initial_velocity = (
@@ -158,7 +158,7 @@ class BattedBallTrajectory:
         result_df = pd.DataFrame(np.array(ans).reshape(-1, 7))
         result_df.columns = pd.Index(["t", "x", "y", "z", "vx", "vy", "vz"])
 
-        return result_df
+        return Trajectory(result_df)
 
     def trajectory_fun(
         self,

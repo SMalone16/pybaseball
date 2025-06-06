@@ -5,6 +5,7 @@ from .batted_balls.calculator import (
     LiftForceCoefficients,
     EnvironmentalParameters,
 )
+from .trajectory import Trajectory
 
 __all__ = [
     "BattedBallTrajectory",
@@ -12,4 +13,5 @@ __all__ = [
     "DragForceCoefficients",
     "LiftForceCoefficients",
     "EnvironmentalParameters",
+    "Trajectory",
 ]
