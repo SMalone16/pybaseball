@@ -126,8 +126,8 @@ Batting stats are obtained similarly. The function call for getting a season-lev
 
 (For season level queries, if you prefer Baseball Reference to FanGraphs, there is a third option, `pitching_stats_bref(season)`. This works the same as `pitching_stats`, but retrieves its data from Baseball Reference instead. This is *not recommended*, however, because the Baseball Reference query currently can only retrieve one season's worth of data per request.)
 
-### Game-by-Game Results and Schedule 
-The `schedule_and_record` function returns a team's game-by-game results for a given season. The function's only two arguments are `season` and `team`, where team is the team's abbreviation (i.e. NYY for New York Yankees).
+### Game-by-Game Results and Schedule
+The `schedule_and_record` function returns a team's game-by-game results for a given season. Pass `team` as the team's abbreviation (i.e. NYY for New York Yankees). If `team` is omitted or `None`, results for all MLB teams in that season are returned.
 
 ```python
 # Example: Say we want to know the 1927 Yankees record on May 16 
@@ -136,6 +136,10 @@ data = schedule_and_record(1927, 'NYY')
 data.loc[data.Date.str.contains("May 16"), :]
               Date   Tm Home_Away  Opp W/L    R   RA  Inn   W-L  Rank      GB      Win      Loss   Save  Time D/N  Attendance   cLI  Streak Orig. Scheduled
 28  Monday, May 16  NYY         @  DET   W  6.0  2.0  9.0  19-8   1.0  up 3.0  Ruether  Holloway  Moore  2:28   D      4000.0  5.15       5            None
+```
+```python
+# All teams' schedules for 2017
+all_teams = schedule_and_record(2017)
 ```
 
 
