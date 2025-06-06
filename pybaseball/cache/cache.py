@@ -2,6 +2,8 @@ import abc
 import datetime
 import functools
 import glob
+import json
+import logging
 import os
 from typing import Any, Callable, Dict, Optional, TypeVar, cast
 
@@ -9,6 +11,8 @@ import pandas as pd
 
 from . import cache_record, func_utils
 from .cache_config import CacheConfig, autoload_cache
+
+logger = logging.getLogger("pybaseball")
 
 # Doing this instead of defining the types in our cache functions allows VS Code to pick up the proper type annotations
 # https://github.com/microsoft/pyright/issues/774
@@ -91,7 +95,11 @@ class df_cache:
             ]
 
             return {"func": func_name, "args": arglist, "kwargs": kwargs}
-        except:  # pylint: disable=bare-except
+        except (TypeError, AttributeError, ValueError) as err:
+            logger.error("Failed to gather cache metadata: %s", err)
+            return {}
+        except Exception as err:  # unexpected
+            logger.exception("Unexpected error gathering cache metadata")
             return {}
 
     def _safe_load_func_cache(self, func_data: Dict) -> Optional[pd.DataFrame]:
@@ -107,7 +115,11 @@ class df_cache:
                     return record.load_df()
 
             return None
-        except:  # pylint: disable=bare-except
+        except (OSError, json.JSONDecodeError, ValueError) as err:
+            logger.error("Failed to load cache for %s: %s", func_data, err)
+            return None
+        except Exception as err:  # unexpected
+            logger.exception("Unexpected error loading cache")
             return None
 
     def _safe_save_func_cache(self, func_data: Dict, result: pd.DataFrame) -> None:
@@ -116,6 +128,8 @@ class df_cache:
                 new_record = cache_record.CacheRecord(data=func_data, expires=self.expires)
                 new_record.save()
                 new_record.save_df(result)
-        except:  # pylint: disable=bare-except
-            pass
+        except (OSError, TypeError, ValueError) as err:
+            logger.error("Failed to save cache for %s: %s", func_data, err)
+        except Exception as err:  # unexpected
+            logger.exception("Unexpected error saving cache")
 

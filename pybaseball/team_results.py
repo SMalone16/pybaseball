@@ -67,12 +67,15 @@ def get_table(soup: BeautifulSoup, team: str) -> pd.DataFrame:
 
             cols = [ele.text.strip() for ele in cols]
             data.append([ele for ele in cols if ele])
-        except:
+        except (IndexError, AttributeError) as err:
             # two cases will break the above: games that haven't happened yet, and BR's redundant mid-table headers
-            # if future games, grab the scheduling info. Otherwise do nothing. 
+            # if future games, grab the scheduling info. Otherwise do nothing.
+            logger.debug("Expected issue parsing row %s: %s", row_index, err)
             if len(cols) > 1:
                 cols = [ele.text.strip() for ele in cols][0:5]
                 data.append([ele for ele in cols if ele])
+        except Exception as err:  # unexpected
+            logger.exception("Unexpected error parsing row %s", row_index)
     #convert to pandas dataframe. make first row the table's column names and reindex.
     df = pd.DataFrame(data)
     df = df.rename(columns=df.iloc[0])
