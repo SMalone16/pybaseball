@@ -31,6 +31,7 @@ Discussion about pybaseball use and development is hosted on our group Discord, 
 ##  Documentation
 
 Full documentation on available functions and their arguments along with examples is located [docs](https://github.com/jldbc/pybaseball/tree/master/docs) folder. This section contains a brief overview of the main functionalities of this library.
+See the [Record Breaker guide](https://github.com/jldbc/pybaseball/blob/master/docs/record_breaker.md) for information on the record-breaking game search feature.
 
 
 ### Statcast: Pull advanced metrics from Major League Baseball's Statcast system
