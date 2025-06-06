@@ -1,5 +1,5 @@
 import numpy as np
-from pybaseball.analysis.trajectories import BattedBallTrajectory
+from pybaseball.analysis.trajectories import BattedBallTrajectory, Trajectory
 import pytest
 
 
@@ -21,6 +21,7 @@ def test_batted_ball_trajectory():
     traj = batted_ball_traj.get_trajectory(
         initial_speed, launch_angle, launch_dir, initial_spin, spin_angle
     )
+    assert isinstance(traj, Trajectory)
     assert traj.y.iloc[-1] == pytest.approx(308, 0.5)
 
 
@@ -35,6 +36,7 @@ def test_projectile_motion():
     traj = batted_ball_traj.get_trajectory(
         initial_speed, launch_angle, launch_dir, initial_spin, spin_angle
     )
+    assert isinstance(traj, Trajectory)
     assert traj.t.iloc[-1] == pytest.approx(
         2
         * initial_speed
@@ -58,6 +60,7 @@ def test_projectile_motion():
     traj = batted_ball_traj.get_trajectory(
         initial_speed, launch_angle, launch_dir, initial_spin, spin_angle
     )
+    assert isinstance(traj, Trajectory)
     assert traj.t.iloc[-1] == pytest.approx(
         2
         * initial_speed
