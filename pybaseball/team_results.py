@@ -26,8 +26,10 @@ def get_soup(season: Optional[int], team: str) -> BeautifulSoup:
 def get_table(soup: BeautifulSoup, team: str) -> pd.DataFrame:
     try:
         table = soup.find_all('table')[0]
-    except:
-        raise ValueError("Data cannot be retrieved for this team/year combo. Please verify that your team abbreviation is accurate and that the team existed during the season you are searching for.")
+    except IndexError:
+        raise ValueError(
+            "Data cannot be retrieved for this team/year combo. Please verify that your team abbreviation is accurate and that the team existed during the season you are searching for."
+        )
     data = []
     headings = [th.get_text() for th in table.find("tr").find_all("th")]
     headings = headings[1:] # the "gm#" heading doesn't have a <td> element
