@@ -2,13 +2,17 @@ from datetime import date, datetime, timedelta
 
 import pytest
 
+import logging
+from _pytest.logging import LogCaptureFixture
 from pybaseball.utils import DATE_FORMAT, sanitize_date_range
 
 
-def test_sanitize_date_range_nones() -> None:
+def test_sanitize_date_range_nones(caplog: LogCaptureFixture) -> None:
     yesterday = date.today() - timedelta(days=1)
 
-    start_dt, end_dt = sanitize_date_range(None, None)
+    with caplog.at_level(logging.WARNING):
+        start_dt, end_dt = sanitize_date_range(None, None)
+        assert "Warning: no date range supplied, assuming yesterday's date." in caplog.text
 
     assert start_dt == yesterday
     assert end_dt == date.today()

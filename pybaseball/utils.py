@@ -4,9 +4,13 @@ import functools
 import io
 from typing import Dict, Iterator, Optional, Tuple, Union
 import zipfile
+import logging
 
 import pandas as pd
 import requests
+
+# module level logger
+logger = logging.getLogger("pybaseball")
 
 from . import cache
 
@@ -177,11 +181,11 @@ def date_range(start: date, stop: date, step: int = 1, verbose: bool = True) -> 
 		if (low.month, low.day) < (3, 15):
 			low = low.replace(month=3, day=15)
 			if verbose:
-				print('Skipping offseason dates')
+				logger.info('Skipping offseason dates')
 		elif (low.month, low.day) > (11, 15):
 			low = low.replace(month=3, day=15, year=low.year + 1)
 			if verbose:
-				print('Skipping offseason dates')
+				logger.info('Skipping offseason dates')
 
 		if low > stop:
 			return
@@ -205,11 +209,11 @@ def statcast_date_range(start: date, stop: date, step: int, verbose: bool = True
 		if low < season_start:
 			low = season_start
 			if verbose:
-				print('Skipping offseason dates')
+				logger.info('Skipping offseason dates')
 		elif low > season_end:
 			low, _ = STATCAST_VALID_DATES.get(low.year + 1, (date(month=3, day=15, year=low.year + 1), None))
 			if verbose:
-				print('Skipping offseason dates')
+				logger.info('Skipping offseason dates')
 
 		if low > stop:
 			return
@@ -235,10 +239,10 @@ def sanitize_date_range(start_dt: Optional[str], end_dt: Optional[str]) -> Tuple
 		start_dt = str(today - timedelta(1))
 		end_dt = str(today)
 
-		print('start_dt', start_dt)
-		print('end_dt', end_dt)
+		logger.info('start_dt %s', start_dt)
+		logger.info('end_dt %s', end_dt)
 
-		print("Warning: no date range supplied, assuming yesterday's date.")
+		logger.warning("Warning: no date range supplied, assuming yesterday's date.")
 
 	# If only one date is supplied, assume they only want that day's stats
 	# query in this case is from date 1 to date 1
@@ -281,7 +285,7 @@ def split_request(start_dt: str, end_dt: str, player_id: int, url: str) -> pd.Da
 	end_dt_datetime = datetime.strptime(end_dt, '%Y-%m-%d')
 	results = []  # list to hold data as it is returned
 	player_id_str = str(player_id)
-	print('Gathering Player Data')
+	logger.info('Gathering Player Data')
 	# break query into multiple requests
 	while current_dt <= end_dt_datetime:
 		remaining = end_dt_datetime - current_dt
