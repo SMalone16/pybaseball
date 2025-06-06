@@ -13,6 +13,15 @@ class CacheConfig(singleton.Singleton):
     CFG_FILENAME = 'cache_config.json'
     PYBASEBALL_CACHE_ENV = 'PYBASEBALL_CACHE'
 
+    @property
+    def cache_directory(self) -> str:
+        return self._cache_directory
+
+    @cache_directory.setter
+    def cache_directory(self, directory: str) -> None:
+        self._cache_directory = directory
+        file_utils.mkdir(self._cache_directory)
+
     def __init__(self, enabled: bool = False, default_expiration: int = None, cache_type: Optional[str] = None):
         self.enabled = enabled
         self.cache_directory = os.environ.get(CacheConfig.PYBASEBALL_CACHE_ENV) or CacheConfig.DEFAULT_CACHE_DIR
@@ -24,7 +33,7 @@ class CacheConfig(singleton.Singleton):
         else:
             self.cache_type = CacheConfig.DEFAULT_CACHE_TYPE
 
-        file_utils.mkdir(self.cache_directory)
+        # cache_directory setter handles creating the directory
 
     def enable(self, enabled: bool = True) -> None:
         self.enabled = enabled
