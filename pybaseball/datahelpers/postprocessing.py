@@ -1,10 +1,14 @@
 import re
 from datetime import datetime
 from typing import Any, List, Union, Optional
+import logging
 
 import attr
 import numpy as np
 import pandas as pd
+
+# module level logger
+logger = logging.getLogger("pybaseball")
 
 null_regexes = [
     re.compile(r'^\s*$'),
@@ -85,8 +89,10 @@ def try_parse(
         if date_regex.match(value):
             try:
                 return datetime.strptime(value, date_format)
-            except:  # pylint: disable=bare-except
-                pass
+            except ValueError as err:
+                logger.debug("Date parse failed for value '%s': %s", value, err)
+            except Exception as err:  # unexpected
+                logger.exception("Unexpected error parsing date value '%s'", value)
 
     # Is it an float or an int (including percetages)?
     try:
@@ -101,8 +107,10 @@ def try_parse(
             return float(value)
 
         return int(value)
-    except:  # pylint: disable=bare-except
-        pass
+    except ValueError as err:
+        logger.debug("Numeric parse failed for value '%s': %s", value, err)
+    except Exception as err:  # unexpected
+        logger.exception("Unexpected error parsing numeric value '%s'", value)
 
     return value
 

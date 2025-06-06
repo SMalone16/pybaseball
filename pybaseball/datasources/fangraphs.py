@@ -1,8 +1,11 @@
 from abc import ABC
 from typing import Any, List, Optional, Union
+import logging
 
 import lxml
 import pandas as pd
+
+logger = logging.getLogger("pybaseball")
 
 from .. import cache
 from ..datahelpers.column_mapper import BattingStatsColumnMapper, ColumnListMapperFunction, GenericColumnMapper
@@ -26,8 +29,10 @@ def extract_id_from_row(fg_row: lxml.etree.Element, param_name: str) -> Optional
                 values = [qs_param.split('=')[1] for qs_param in qs_params if qs_param.split('=')[0].lower() == param_name]
                 if values:
                     return int(values[0])
-    except:
-        pass
+    except (IndexError, ValueError, AttributeError) as err:
+        logger.debug("Failed to extract %s id from row: %s", param_name, err)
+    except Exception as err:  # unexpected
+        logger.exception("Unexpected error extracting %s id from row", param_name)
     return None
 
 def team_row_id_func(self: Any, fg_row: lxml.etree.Element) -> Optional[int]:
